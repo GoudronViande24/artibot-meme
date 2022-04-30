@@ -73,8 +73,13 @@ const localizer = new Localizer({
  * @param {string[]} args 
  * @param {Artibot} artibot 
  */
-async function dadJoke(message, args, { createEmbed }) {
-	const reponse = await axios(options);
+async function dadJoke(message, args, { createEmbed, version }) {
+	const reponse = await axios({
+		method: "GET",
+		headers: {
+			"User-Agent": "Artibot " + version
+		}
+	});
 	const joke = reponse.data.joke;
 
 	let embed = createEmbed()
