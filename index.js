@@ -76,8 +76,10 @@ const localizer = new Localizer({
 async function dadJoke(message, args, { createEmbed, version }) {
 	const reponse = await axios({
 		method: "GET",
+		url: "https://icanhazdadjoke.com/",
 		headers: {
-			"User-Agent": "Artibot " + version
+			"User-Agent": "Artibot " + version,
+			"Accept": "application/json"
 		}
 	});
 	const joke = reponse.data.joke;
