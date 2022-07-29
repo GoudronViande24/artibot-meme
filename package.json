@@ -1,6 +1,6 @@
 {
   "name": "artibot-meme",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Memes, reactions and other random random stuff for Artibot",
   "main": "index.js",
 	"type": "module",

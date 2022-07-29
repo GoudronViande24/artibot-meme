@@ -32,6 +32,7 @@ export default ({ config: { lang } }) => {
 			"en"
 		],
 		repo: "GoudronViande24/artibot-meme",
+		packageName: "artibot-meme",
 		parts: [
 			new TriggerGroup({
 				id: "69",
