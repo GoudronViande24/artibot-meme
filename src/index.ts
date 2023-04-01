@@ -66,7 +66,7 @@ export default ({ config: { lang } }: Artibot): Module => {
 }
 
 const localizer = new Localizer({
-	filePath: path.join(__dirname, "locales.json")
+	filePath: path.join(__dirname, "../locales.json")
 });
 
 /** Dad joke command */
