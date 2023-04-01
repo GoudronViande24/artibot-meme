@@ -1,7 +1,6 @@
 import Artibot, { Command, Module, TriggerGroup } from "artibot";
 import Localizer from "artibot-localizer";
 import { Message } from "discord.js";
-import https from "https";
 import axios from "axios";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -17,10 +16,8 @@ const { version } = require('./package.json');
  * Meme module for Artibot
  * @author GoudronViande24
  * @license MIT
- * @param {Artibot} artibot
- * @returns {Module}
  */
-export default ({ config: { lang } }) => {
+export default ({ config: { lang } }: Artibot): Module => {
 	localizer.setLocale(lang);
 
 	return new Module({
@@ -37,13 +34,17 @@ export default ({ config: { lang } }) => {
 			new TriggerGroup({
 				id: "69",
 				triggers: [" 69 "],
-				mainFunction: (message) => message.reply({ content: "Nice" })
+				mainFunction: async (message): Promise<void> => {
+					await message.reply({ content: "Nice" });
+				}
 			}),
 
 			new TriggerGroup({
 				id: "sus",
 				triggers: ["sus "],
-				mainFunction: (message) => message.reply({ content: "ඞ" })
+				mainFunction: async (message) => {
+					await message.reply({ content: "ඞ" });
+				}
 			}),
 
 			new Command({
@@ -68,13 +69,8 @@ const localizer = new Localizer({
 	filePath: path.join(__dirname, "locales.json")
 });
 
-/**
- * Dad joke command
- * @param {Message} message 
- * @param {string[]} args 
- * @param {Artibot} artibot 
- */
-async function dadJoke(message, args, { createEmbed, version }) {
+/** Dad joke command */
+async function dadJoke(message: Message, args: string[], { createEmbed, version }: Artibot): Promise<void> {
 	const reponse = await axios({
 		method: "GET",
 		url: "https://icanhazdadjoke.com/",
@@ -85,7 +81,7 @@ async function dadJoke(message, args, { createEmbed, version }) {
 	});
 	const joke = reponse.data.joke;
 
-	let embed = createEmbed()
+	const embed = createEmbed()
 		.setTitle(localizer._("Dad joke"))
 		.setDescription(joke);
 
@@ -94,37 +90,23 @@ async function dadJoke(message, args, { createEmbed, version }) {
 	});
 }
 
-/**
- * Chuck norris command
- * @param {Message} message 
- * @param {string[]} args 
- * @param {Artibot} artibot 
- */
-function chuckNorris(message, args, { log, createEmbed }) {
-	const options = {
-		hostname: 'api.chucknorris.io',
-		port: 443,
-		path: '/jokes/random',
-		method: 'GET'
-	};
-
-	const req = https.request(options, res => {
-		res.on('data', data => {
-			let embed = createEmbed()
-				.setTitle(localizer._("Chuck Norris joke"))
-				.setDescription(JSON.parse(data).value)
-				.setThumbnail(JSON.parse(data).icon_url);
-
-			message.reply({
-				embeds: [embed]
-			});
-		});
+/** Chuck norris command */
+async function chuckNorris(message: Message, args: string[], { log, createEmbed }: Artibot): Promise<void> {
+	const response = await axios({
+		method: "GET",
+		url: "https://api.chucknorris.io/jokes/random",
+		headers: {
+			"User-Agent": "Artibot " + version,
+			"Accept": "application/json"
+		}
 	});
 
-	req.on('error', error => {
-		message.reply(localizer._("An error occured while executing this command."));
-		log("Meme", error);
-	});
+	const embed = createEmbed()
+		.setTitle(localizer._("Chuck Norris joke"))
+		.setDescription(response.data.value)
+		.setThumbnail(response.data.icon_url);
 
-	req.end();
+	await message.reply({
+		embeds: [embed]
+	});
 }
